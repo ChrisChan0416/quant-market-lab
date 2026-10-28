@@ -1,0 +1,15 @@
+# secrets — never commit (copy the *.example files instead)
+soclaas.env
+datasources.env
+*.env
+!*.env.example
+
+# local data, caches and logs
+data/
+__pycache__/
+*.pyc
+*.log
+.DS_Store
+
+# local version backups
+backup-*/

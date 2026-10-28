@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0f17" />
+    <title>QuantScope · 环球市场量化分析台</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-lockup">
+          <div class="brand-mark"><span></span><span></span><span></span></div>
+          <div>
+            <div class="brand-name">QUANT<span>SCOPE</span></div>
+            <div class="brand-subtitle">PERSONAL MARKET LAB</div>
+          </div>
+        </div>
+
+        <div class="side-label">市场宇宙 / MARKET UNIVERSE</div>
+        <nav class="market-nav" aria-label="核心指数">
+          <button class="market-nav-item active" data-symbol="HSTECH.HK">
+            <span class="market-dot cyan"></span>
+            <span class="market-nav-copy"><strong>恒生科技</strong><small>HSTECH · HK</small></span>
+            <span class="market-nav-change" data-nav-change="HSTECH.HK">--</span>
+          </button>
+          <button class="market-nav-item" data-symbol="^HSI">
+            <span class="market-dot blue"></span>
+            <span class="market-nav-copy"><strong>恒生指数</strong><small>HSI · HK</small></span>
+            <span class="market-nav-change" data-nav-change="^HSI">--</span>
+          </button>
+          <button class="market-nav-item" data-symbol="^IXIC">
+            <span class="market-dot violet"></span>
+            <span class="market-nav-copy"><strong>纳斯达克</strong><small>IXIC · US</small></span>
+            <span class="market-nav-change" data-nav-change="^IXIC">--</span>
+          </button>
+          <button class="market-nav-item" data-symbol="^GSPC">
+            <span class="market-dot orange"></span>
+            <span class="market-nav-copy"><strong>S&amp;P 500</strong><small>GSPC · US</small></span>
+            <span class="market-nav-change" data-nav-change="^GSPC">--</span>
+          </button>
+        </nav>
+
+        <div class="side-label global-label">全球资产 / GLOBAL ASSETS</div>
+        <nav class="asset-nav" aria-label="全球资产">
+          <button class="asset-nav-item" data-symbol="BTC-USD"><span class="asset-mini-icon bitcoin">₿</span><span><strong>比特币</strong><small>BTC · USD</small></span></button>
+          <button class="asset-nav-item" data-symbol="CL=F"><span class="asset-mini-icon oil">◒</span><span><strong>WTI 原油</strong><small>CL=F · NYMEX</small></span></button>
+          <button class="asset-nav-item" data-symbol="XAUUSD=X"><span class="asset-mini-icon gold">Au</span><span><strong>伦敦金</strong><small>XAU · SPOT</small></span></button>
+          <button class="asset-nav-item" data-symbol="GC=F"><span class="asset-mini-icon gold">Au</span><span><strong>纽约金</strong><small>GC=F · COMEX</small></span></button>
+        </nav>
+
+        <div class="side-label watch-label">我的观察池 / WATCHLIST</div>
+        <div class="watchlist" id="watchlist">
+          <button class="watch-item" data-symbol="AAPL"><span class="ticker-badge">A</span><span>Apple</span><small>AAPL</small></button>
+          <button class="watch-item" data-symbol="0700.HK"><span class="ticker-badge hk">T</span><span>Tencent</span><small>0700.HK</small></button>
+          <button class="watch-item" data-symbol="9988.HK"><span class="ticker-badge hk">B</span><span>Alibaba</span><small>9988.HK</small></button>
+          <button class="watch-item" data-symbol="TSLA"><span class="ticker-badge red">T</span><span>Tesla</span><small>TSLA</small></button>
+        </div>
+
+        <div class="side-footer">
+          <div class="live-pill"><span class="live-dot"></span> LOCAL MODEL ONLINE</div>
+          <div class="side-footer-copy">Multi-factor quant v2.1<br />Data: Yahoo Finance · LLM: SoCLaaS</div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb"><span>量化驾驶舱</span><i>/</i><strong>市场监控</strong></div>
+          <div class="topbar-actions">
+            <span class="data-source"><span class="source-dot"></span> Yahoo Finance <em id="dataMode">LIVE</em></span>
+            <span class="updated-at" id="updatedAt">等待更新</span>
+            <button class="snap-button" id="snapshotButton" type="button" title="把当前标的的当日量化分析截成一张长图（PNG）"><span class="snap-icon">⤓</span>截长图</button>
+            <button class="icon-button" id="refreshButton" title="刷新行情" aria-label="刷新行情"><span class="refresh-symbol">↻</span></button>
+          </div>
+        </header>
+
+        <section class="hero-row">
+          <div class="hero-copy">
+            <div class="eyebrow">GLOBAL SIGNALS / 01</div>
+            <h1>让价格自己说话<span class="accent-dot">.</span></h1>
+            <p>多市场趋势、动量、风险与成交结构的统一视图。</p>
+          </div>
+          <form class="search-box" id="searchForm">
+            <div class="search-icon">⌕</div>
+            <input id="symbolInput" autocomplete="off" value="AAPL" placeholder="输入代码，如 AAPL、0700.HK" aria-label="输入股票代码" />
+            <button type="submit">开始分析 <span>→</span></button>
+          </form>
+        </section>
+
+        <div class="quick-symbols">
+          <span>快速分析</span>
+          <button data-symbol="AAPL">AAPL</button>
+          <button data-symbol="0700.HK">0700.HK</button>
+          <button data-symbol="9988.HK">9988.HK</button>
+          <button data-symbol="NVDA">NVDA</button>
+          <button data-symbol="TSLA">TSLA</button>
+          <button data-symbol="600519.SS">600519.SS</button>
+          <button data-symbol="300750.SZ">300750.SZ</button>
+        </div>
+
+        <section class="summary-grid">
+          <article class="panel signal-panel">
+            <div class="panel-topline"><span>模型结论 / MODEL VERDICT</span><span class="mini-status" id="signalStatus">CALCULATING</span></div>
+            <div class="signal-main">
+              <div>
+                <div class="instrument-line"><span class="instrument-name" id="instrumentName">Apple Inc.</span><span class="ticker-tag" id="instrumentTicker">AAPL</span></div>
+                <div class="price-line"><span id="currentPrice">--</span><span class="price-currency" id="priceCurrency">USD</span><span class="price-change" id="priceChange">--</span></div>
+                <div class="price-note" id="priceNote">正在读取最新交易日收盘数据</div>
+              </div>
+              <div class="verdict-badge neutral" id="verdictBadge"><span class="verdict-icon">•</span><span id="verdictText">等待分析</span></div>
+            </div>
+            <div class="signal-score-row">
+              <div class="score-copy"><span>多空强度</span><strong id="signalScore">--</strong></div>
+              <div class="score-track"><div class="score-fill" id="scoreFill"></div><span class="score-mid"></span></div>
+              <div class="score-ends"><span>空头</span><span>多头</span></div>
+            </div>
+            <div class="signal-meta-grid">
+              <div><span>历史胜率（收缩）</span><strong id="confidenceValue">--</strong></div>
+              <div><span>公允价值偏离</span><strong id="holdingPeriod">--</strong></div>
+              <div><span>市场环境</span><strong id="regimeValue">--</strong></div>
+            </div>
+          </article>
+
+          <article class="panel market-pulse-panel">
+            <div class="panel-topline"><span>全球市场脉搏 / MARKET PULSE</span><span class="pulse-date" id="pulseDate">--</span></div>
+            <div class="market-pulse-list" id="marketPulseList">
+              <div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div><div class="skeleton-row"></div>
+            </div>
+            <div class="pulse-footnote"><span class="pulse-legend positive"></span>上涨 <span class="pulse-legend negative"></span>下跌 <span class="pulse-legend muted"></span>数据基于最近收盘</div>
+          </article>
+        </section>
+
+        <section class="panel market-mood-panel" id="marketMoodPanel">
+          <div class="panel-topline"><span>市场情绪 / MARKET MOOD · 恐惧与贪婪</span><span class="senti-actions"><span class="plan-tag" id="moodStatus">等待数据</span><button type="button" class="ghost-btn senti-refresh" id="moodRefresh" title="重新计算（服务端缓存 15 分钟）">↻ 刷新</button></span></div>
+          <div class="mood-cards" id="moodCards"><div class="valuation-empty">正在读取美股、港股、A股的情绪指标…</div></div>
+          <div id="moodDetail"></div>
+          <div class="valuation-note" id="moodNote"></div>
+        </section>
+
+        <section class="panel market-news-panel" id="marketNewsPanel">
+          <div class="panel-topline"><span>今日十大市场新闻 / TOP 10 MARKET NEWS · 过去 24 小时</span><span class="senti-actions"><span class="plan-tag" id="newsStatus">等待数据</span><button type="button" class="ghost-btn senti-refresh" id="newsRefresh" title="重新抓取并精选（会调用一次 LLM）">↻ 重新抓取</button></span></div>
+          <div class="news-mood" id="newsMood"></div>
+          <div id="newsList"></div>
+          <div class="valuation-note" id="newsNote"></div>
+        </section>
+
+        <section class="panel global-assets-panel">
+          <div class="panel-topline"><span>全球资产雷达 / GLOBAL ASSETS</span><span class="pulse-date">BTC · OIL · GOLD</span></div>
+          <div class="global-asset-grid" id="globalAssetGrid">
+            <div class="asset-skeleton"></div><div class="asset-skeleton"></div><div class="asset-skeleton"></div><div class="asset-skeleton"></div><div class="asset-skeleton"></div>
+          </div>
+          <div class="global-assets-note">伦敦金为 LBMA Gold Price AM 日线代理；纽约金为 COMEX 黄金期货；原油同时跟踪 WTI 与布伦特。行情可能延迟。</div>
+        </section>
+
+        <section class="panel china-indices-panel">
+          <div class="panel-topline"><span>中国 A 股与指数 / CHINA A-SHARE</span><span class="pulse-date">上海 · 深圳 · 北京</span></div>
+          <div class="china-index-grid" id="chinaIndexGrid"><div class="asset-skeleton"></div><div class="asset-skeleton"></div><div class="asset-skeleton"></div><div class="asset-skeleton"></div></div>
+          <div class="china-index-note">覆盖上证综指、沪深300、上证50、中证500/1000、深证成指、创业板指与科创50；输入 6 位 A 股代码时，系统会按常见交易所规则自动补全 .SS / .SZ。</div>
+        </section>
+
+        <section class="panel market-board-panel">
+          <div class="panel-topline"><span>六地市场热榜 / MARKET BOARD</span><span class="pulse-date" id="marketBoardDate">等待更新</span></div>
+          <div class="market-board-intro">港、新、美、日、韩、中六地：热门股来自预置的高流动性代表观察池，分类板块为池内股票的等权日涨跌代理。</div>
+          <div class="market-board-grid" id="marketBoardGrid"><div class="board-loading"></div><div class="board-loading"></div><div class="board-loading"></div></div>
+          <div class="market-board-note">数据按最近可用交易日收盘计算；不同市场交易时段不同，未收市市场与已收市市场可能存在时间差。点击股票名称可进入完整量化分析。</div>
+        </section>
+
+        <section class="workspace-grid">
+          <article class="panel position-book-panel">
+            <div class="panel-topline"><span>自选与仓位 / WATCHLIST &amp; POSITION BOOK</span><span class="pulse-date">LOCAL STORAGE</span></div>
+            <div class="watch-add-row">
+              <input id="watchSymbolInput" placeholder="加入自选，如 DBS、NVDA" aria-label="加入自选代码" />
+              <button id="addWatchButton" type="button">+ 加入自选</button>
+            </div>
+            <div class="watch-chip-list" id="watchChipList"></div>
+            <form class="position-form" id="positionForm">
+              <div class="position-form-title">记录一笔仓位</div>
+              <div class="position-form-grid">
+                <label>代码<input id="positionSymbol" required placeholder="AAPL / CL=F" /></label>
+                <label>方向<select id="positionSide"><option value="long">多 / Long</option><option value="short">空 / Short</option></select></label>
+                <label>类型<select id="positionKind"><option value="equity">股票 / 指数</option><option value="future">期货</option><option value="crypto">加密资产</option><option value="option">期权</option></select></label>
+                <label>数量<input id="positionQuantity" required type="number" min="0" step="any" placeholder="100" /></label>
+                <label>平均成本<input id="positionAverage" required type="number" min="0" step="any" placeholder="价格" /></label>
+                <label>标记价（可选）<input id="positionMark" type="number" min="0" step="any" placeholder="留空用行情" /></label>
+              </div>
+              <button class="position-submit" type="submit">保存仓位</button>
+            </form>
+            <div class="portfolio-summary"><div><span>仓位名义金额</span><strong id="portfolioValue">--</strong></div><div><span>未实现盈亏</span><strong id="portfolioPnl">--</strong></div><div><span>记录数</span><strong id="portfolioCount">0</strong></div></div>
+            <div class="position-list" id="positionList"><div class="empty-position">还没有仓位。先加入自选，或记录第一笔仓位。</div></div>
+            <div class="position-note">仓位记录只保存在当前浏览器；期货名义金额按合约乘数估算，不能替代券商保证金和强平计算。</div>
+          </article>
+
+          <article class="panel options-panel">
+            <div class="panel-topline"><span>期权实验台 / OPTIONS LAB</span><span class="plan-tag">THEORETICAL</span></div>
+            <form class="option-form" id="optionForm">
+              <label>标的<input id="optionUnderlying" value="AAPL" placeholder="AAPL / SPY" /></label>
+              <label>类型<select id="optionType"><option value="call">Call 看涨</option><option value="put">Put 看跌</option></select></label>
+              <label>持仓<select id="optionSide"><option value="long">买入 / Long</option><option value="short">卖出 / Short</option></select></label>
+              <label>现价<input id="optionSpot" type="number" min="0" step="any" /></label>
+              <label>行权价<input id="optionStrike" type="number" min="0" step="any" /></label>
+              <label>到期日<input id="optionExpiry" type="date" /></label>
+              <label>隐含波动率 %<input id="optionIv" type="number" min="0.1" step="0.1" value="30" /></label>
+              <label>无风险利率 %<input id="optionRate" type="number" step="0.1" value="3.0" /></label>
+              <label>实际权利金<input id="optionPremium" type="number" min="0" step="any" placeholder="留空用理论值" /></label>
+              <label>合约乘数<input id="optionMultiplier" type="number" min="1" step="any" value="100" /></label>
+              <label>合约数量<input id="optionContracts" type="number" min="1" step="1" value="1" /></label>
+              <button class="option-submit" type="submit">计算期权场景</button>
+            </form>
+            <div class="option-result-banner"><span id="optionModelStatus">等待计算</span><strong id="optionBias">--</strong></div>
+            <div class="option-metrics-grid">
+              <div><span>理论权利金</span><strong id="optionTheo">--</strong></div><div><span>Delta</span><strong id="optionDelta">--</strong></div><div><span>Gamma</span><strong id="optionGamma">--</strong></div><div><span>Vega / 1%</span><strong id="optionVega">--</strong></div><div><span>Theta / 日</span><strong id="optionTheta">--</strong></div><div><span>盈亏平衡</span><strong id="optionBreakeven">--</strong></div><div><span>最大亏损</span><strong id="optionMaxLoss">--</strong></div><div><span>±5% 情景</span><strong id="optionScenario">--</strong></div>
+            </div>
+            <div class="option-note" id="optionNote">Black–Scholes 理论值，仅用于研究；未接入实时期权链、分红、提前行权、流动性和盘口。</div>
+          </article>
+        </section>
+
+        <section class="metric-grid" id="metricGrid">
+          <article class="metric-card"><div class="metric-header"><span>最新价</span><span class="metric-icon cyan-icon">$</span></div><strong id="metricPrice">--</strong><small id="metricPriceSub">--</small></article>
+          <article class="metric-card"><div class="metric-header"><span>20日趋势</span><span class="metric-icon blue-icon">↗</span></div><strong id="metricTrend">--</strong><small id="metricTrendSub">相对 MA20</small></article>
+          <article class="metric-card"><div class="metric-header"><span>RSI (14)</span><span class="metric-icon purple-icon">◒</span></div><strong id="metricRsi">--</strong><small id="metricRsiSub">中性区间</small></article>
+          <article class="metric-card"><div class="metric-header"><span>成交量比</span><span class="metric-icon orange-icon">▥</span></div><strong id="metricVolume">--</strong><small id="metricVolumeSub">vs 20日均量</small></article>
+          <article class="metric-card"><div class="metric-header"><span>年化波动</span><span class="metric-icon rose-icon">≈</span></div><strong id="metricVolatility">--</strong><small id="metricVolatilitySub">252日年化</small></article>
+          <article class="metric-card"><div class="metric-header"><span>MACD</span><span class="metric-icon green-icon">≋</span></div><strong id="metricMacd">--</strong><small id="metricMacdSub">趋势动量</small></article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel chart-panel">
+            <div class="chart-heading">
+              <div><div class="panel-topline no-margin"><span>价格结构 / PRICE STRUCTURE</span><span class="chart-live-dot"></span></div><h2 id="chartTitle">AAPL · 日线</h2></div>
+              <div class="range-tabs" id="rangeTabs"><button data-range="1mo">1M</button><button data-range="3mo">3M</button><button data-range="6mo">6M</button><button class="active" data-range="1y">1Y</button><button data-range="5y">5Y</button></div>
+            </div>
+            <div class="chart-stats"><span>MA20 <strong id="ma20Value">--</strong></span><span>MA60 <strong id="ma60Value">--</strong></span><span>布林位置 <strong id="bollingerValue">--</strong></span></div>
+            <div class="price-chart-wrap"><div class="chart-y-labels" id="chartYLabels"></div><div id="priceChart" class="svg-chart" aria-label="价格走势图"></div></div>
+            <div class="chart-x-labels" id="chartXLabels"></div>
+            <div class="volume-heading"><span>成交量 / VOLUME</span><span id="volumeLatest">--</span></div>
+            <div class="volume-chart-wrap"><div id="volumeChart" class="svg-chart volume-chart" aria-label="成交量柱状图"></div></div>
+          </article>
+
+          <article class="panel breakdown-panel">
+            <div class="panel-topline"><span>模型拆解 / SIGNAL BREAKDOWN</span><span id="scoreBreakdown">0 / 10</span></div>
+            <div class="factor-list" id="factorList">
+              <div class="factor-row skeleton-factor"></div><div class="factor-row skeleton-factor"></div><div class="factor-row skeleton-factor"></div><div class="factor-row skeleton-factor"></div>
+            </div>
+            <div class="model-method"><span class="method-icon">i</span><div><strong>多因子模型 v2.0</strong><p id="modelMethodText">趋势 25% · 动量 15% · 成交 5% · 市场 15% · 风险 10% · 估值 20% · 质量 10%。每个因子是 [−1, 1] 的连续值，缺失因子按权重重新归一化。</p></div></div>
+          </article>
+        </section>
+
+
+        <section class="panel valuation-panel" id="valuationPanel">
+          <div class="panel-topline"><span>估值中心 / VALUATION LAB</span><span class="plan-tag" id="valuationStatus">等待数据</span></div>
+          <div class="valuation-hero" id="valuationHero"><div class="valuation-empty">正在读取财报与一致预期…</div></div>
+          <div class="valuation-grid">
+            <div class="valuation-col">
+              <div class="sub-title">估值区间 / FOOTBALL FIELD</div>
+              <div id="footballField" class="football-field"></div>
+              <div class="sub-title">模型明细</div>
+              <div id="valuationTable"></div>
+            </div>
+            <div class="valuation-col">
+              <div class="sub-title">关键假设（可修改后重新估值）</div>
+              <form id="assumptionForm" class="assumption-form" novalidate>
+                <label>无风险利率 %<input id="as_rf" type="number" step="any" /></label>
+                <label>成熟市场 ERP %<input id="as_erp" type="number" step="any" /></label>
+                <label>国家风险溢价 %<input id="as_crp" type="number" step="any" /></label>
+                <label>β（Blume 调整）<input id="as_beta" type="number" step="any" /></label>
+                <label>1–5 年增速 %<input id="as_g1" type="number" step="any" /></label>
+                <label>永续增长 %<input id="as_gT" type="number" step="any" /></label>
+                <label>终值 RONIC %<input id="as_terminalRoic" type="number" step="any" placeholder="自动" /></label>
+                <label>有效税率 %<input id="as_taxRate" type="number" step="any" /></label>
+                <label>税前债务成本 %<input id="as_costOfDebt" type="number" step="any" /></label>
+                <label class="wide">同业代码（逗号分隔，用于倍数比较）<input id="as_peers" placeholder="如 MSFT, GOOGL, META" /></label>
+                <div class="assumption-actions"><button type="submit" class="primary-btn">重新估值</button><button type="button" id="resetAssumptions" class="ghost-btn">恢复默认</button></div>
+              </form>
+              <details class="manual-box" id="manualBox">
+                <summary>手动录入基本面（接口不可用，或想用自己的口径时）</summary>
+                <div class="assumption-form manual">
+                  <label>净利润 TTM（亿）<input id="mf_netIncome" type="number" step="any" /></label>
+                  <label>EBIT TTM（亿）<input id="mf_ebit" type="number" step="any" /></label>
+                  <label>自由现金流 TTM（亿）<input id="mf_fcf" type="number" step="any" /></label>
+                  <label>净负债（亿，净现金填负数）<input id="mf_netDebt" type="number" step="any" /></label>
+                  <label>股东权益（亿）<input id="mf_equity" type="number" step="any" /></label>
+                  <label>总股本（亿股）<input id="mf_shares" type="number" step="any" /></label>
+                  <label>每股股息<input id="mf_dps" type="number" step="any" /></label>
+                  <label>预期增速 %<input id="mf_growth" type="number" step="any" /></label>
+                  <div class="assumption-actions"><button type="button" id="applyManual" class="primary-btn">用手动数据估值</button><button type="button" id="clearManual" class="ghost-btn">清除</button></div>
+                </div>
+                <div class="unit-note">金额与股价使用同一币种；手动模式下只能运行 DCF、剩余收益和股息模型。</div>
+              </details>
+              <div id="waccBox" class="wacc-box"></div>
+              <div class="sub-title">反向 DCF / 市场在定价什么</div>
+              <div id="reverseDcf"></div>
+            </div>
+          </div>
+          <div class="valuation-grid three">
+            <div><div class="sub-title">DCF 现金流预测</div><div id="dcfTable"></div></div>
+            <div><div class="sub-title">敏感性 · WACC × 永续增长</div><div id="sensitivityGrid"></div></div>
+            <div><div class="sub-title">Monte Carlo DCF · 2,000 次</div><div id="monteCarloChart"></div></div>
+          </div>
+          <div class="valuation-note" id="valuationNote"></div>
+        </section>
+
+        <section class="analysis-grid">
+          <article class="panel fundamentals-panel">
+            <div class="panel-topline"><span>基本面画像 / FUNDAMENTALS</span><span class="pulse-date" id="fundamentalsTag">--</span></div>
+            <div id="fundamentalsBody"><div class="mini-empty">等待数据</div></div>
+          </article>
+          <article class="panel quality-panel">
+            <div class="panel-topline"><span>财务质量 / QUALITY SCORES</span><span class="pulse-date" id="qualityTag">--</span></div>
+            <div id="qualityBody"><div class="mini-empty">等待数据</div></div>
+          </article>
+        </section>
+
+        <section class="panel sentiment-panel" id="sentimentPanel">
+          <div class="panel-topline"><span>新闻情绪 / NEWS SENTIMENT · LLM</span><span class="senti-actions"><span class="plan-tag" id="sentimentStatus">等待数据</span><button type="button" class="ghost-btn senti-refresh" id="sentimentRefresh" title="重新抓取新闻（已打分的标题走缓存，不会重复调用 LLM）">↻ 重新抓取</button></span></div>
+          <div class="sentiment-hero" id="sentimentHero"><div class="valuation-empty">等待行情加载后读取新闻…</div></div>
+          <div class="sentiment-layout">
+            <div><div class="sub-title">新闻明细 · 按影响排序</div><div id="sentimentList"></div></div>
+            <div>
+              <div class="sub-title">事件分布（相关度 ≥ 50%）</div><div id="sentimentEvents"></div>
+              <div class="sub-title">每日情绪记录</div><div id="sentimentSpark"></div>
+              <div class="sub-title">前向检验 · 情绪 vs 未来 5 日收益</div><div id="sentimentIc"></div>
+            </div>
+          </div>
+          <div class="valuation-note" id="sentimentNote"></div>
+        </section>
+
+        <section class="panel quant-panel">
+          <div class="panel-topline"><span>量化统计 / QUANT ANALYTICS</span><span class="pulse-date" id="quantTag">--</span></div>
+          <div id="quantBody" class="quant-layout">
+            <div class="quant-block"><div class="sub-title">分区间风险收益</div><div id="quantWindows"></div><div class="sub-title">CAPM 回归</div><div id="capmBox"></div></div>
+            <div class="quant-block"><div class="sub-title">尾部风险与分布检验</div><div id="quantRisk"></div></div>
+          </div>
+          <div class="quant-charts">
+            <div><div class="sub-title">收益分布 vs 正态</div><div id="distChart"></div></div>
+            <div><div class="sub-title">回撤水下图</div><div id="drawdownChart"></div></div>
+            <div><div class="sub-title">波动率价格锥</div><div id="priceCone"></div></div>
+          </div>
+          <div class="sub-title">月度收益热力图</div>
+          <div id="monthlyHeatmap"></div>
+        </section>
+
+        <section class="panel backtest-panel">
+          <div class="panel-topline"><span>信号回测 / SIGNAL VALIDATION</span><span class="pulse-date" id="backtestTag">--</span></div>
+          <div class="backtest-layout"><div id="backtestBody"></div><div><div class="sub-title">权益曲线（样本内）</div><div id="equityChart"></div></div></div>
+          <div class="valuation-note" id="backtestNote"></div>
+        </section>
+
+        <section class="bottom-grid">
+          <article class="panel trade-plan-panel">
+            <div class="panel-topline"><span>情景交易计划 / SCENARIO PLAN</span><span class="plan-tag">MODEL ONLY</span></div>
+            <div class="trade-plan-grid">
+              <div class="plan-cell entry"><span>参考入场</span><strong id="planEntry">--</strong><small>当前价附近</small></div>
+              <div class="plan-cell stop"><span>风险止损</span><strong id="planStop">--</strong><small id="planStopSub">ATR 风险带</small></div>
+              <div class="plan-cell target"><span>目标价位</span><strong id="planTarget">--</strong><small>2R 风险回报</small></div>
+              <div class="plan-cell ratio"><span>风险 / 回报</span><strong id="planRatio">--</strong><small id="planDirection">等待信号</small></div>
+            </div>
+            <div class="plan-note" id="planNote">模型会在读取到有效行情后生成条件式交易情景，不构成投资建议。</div>
+          </article>
+          <article class="panel risk-panel">
+            <div class="panel-topline"><span>风险雷达 / RISK RADAR</span><span class="risk-level" id="riskLevel">--</span></div>
+            <div class="risk-bar-labels"><span>低风险</span><span>高风险</span></div>
+            <div class="risk-track"><div id="riskFill"></div></div>
+            <div class="risk-items" id="riskItems"><span>波动率 --</span><span>回撤 --</span><span>Beta --</span></div>
+          </article>
+        </section>
+
+        <section class="daily-grid-section">
+          <article class="panel daily-panel">
+            <div class="panel-topline"><span>每日行动建议 / DAILY PLAYBOOK</span><span class="pulse-date" id="dailyDate">新加坡时间 --</span></div>
+            <div class="daily-head">
+              <div><div class="daily-kicker">基于最近交易日收盘数据</div><h2 id="dailyTitle">等待模型更新</h2><p id="dailySummary">系统会将当前标的的趋势、动量、成交量与风险条件转换为可执行的观察清单。</p></div>
+              <div class="daily-action-chip neutral" id="dailyActionChip">等待建议</div>
+            </div>
+            <div class="daily-detail-grid">
+              <div><span>触发条件</span><strong id="dailyTrigger">--</strong></div>
+              <div><span>执行方式</span><strong id="dailyExecution">--</strong></div>
+              <div><span>新增仓位</span><strong id="dailyPosition">--</strong></div>
+            </div>
+            <div class="daily-note" id="dailyNote">每日建议是规则模型的研究输出，不是针对个人财务状况的投资建议。</div>
+          </article>
+          <article class="panel route-panel">
+            <div class="panel-topline"><span>交易路径 / TRADE PATH · SG</span><span class="plan-tag">CHECK ACCESS</span></div>
+            <div class="route-list">
+              <div><span class="route-tag cn">A</span><p><strong>A 股</strong><small>优先询问支持沪深港股通的持牌券商；只能交易合资格名单，按券商准入和人民币结算安排执行。</small></p></div>
+              <div><span class="route-tag hk">H</span><p><strong>港股</strong><small>开通 HKEX 交易权限；先用现金账户和限价单，确认汇兑、印花税与结算规则。</small></p></div>
+              <div><span class="route-tag sg">S</span><p><strong>新加坡股</strong><small>通过 SGX 交易成员开证券账户；确认 CDP/托管、佣金、最小交易单位与停牌规则。</small></p></div>
+              <div><span class="route-tag us">U</span><p><strong>美股 / 期货期权</strong><small>先开通对应市场与衍生品权限；期货看合约乘数和保证金，期权优先定义风险策略，避免裸卖。</small></p></div>
+            </div>
+            <div class="route-footnote">先确认券商在 MAS Financial Institutions Directory 中的牌照与产品权限，再入金和交易。</div>
+          </article>
+        </section>
+
+        <footer class="app-footer"><span>QUANTSCOPE / PERSONAL MARKET LAB</span><span>数据仅供研究 · 非投资建议 · 指标为规则模型推断</span></footer>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="analytics.js"></script>
+    <script src="valuation.js"></script>
+    <script src="panels.js"></script>
+    <script src="sentiment.js"></script>
+    <script src="market.js"></script>
+    <script src="snapshot.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
